@@ -2,6 +2,8 @@
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+const { fetchAsyncQuestionPropertyQuestionProperty } = require("inquirer/lib/utils/utils");
+var request = "";
 
 
 var connection = mysql.createConnection({
@@ -12,55 +14,81 @@ var connection = mysql.createConnection({
     database: "schemaDB"
 });
 
-var department = "";
+
+
 connection.connect(function (err) {
     if (err) throw err
     console.log("there is problem" + connection.threadId)
-    connection.end()
+    QuestionsPrompt()
+    // afterConnection()
 });
 
-
-inquirer.prompt(["what kind of operation would you like to choosen?"], function (answers) {
-    type: "rawlist",
+function QuestionsPrompt() {
+    inquirer.prompt({
+        type: "rawlist",
         message: "what kind of operation would you like to choosen?",
-            name: "todo",
-                choices:
+        name: "todo",
+        choices:
 
-    {
-        "add department",
-            "add role",
-            "add employee",
-            "view departments",
-            "view roles",
-            "view employees",
-            "Update employee roles",
-            "Update employee managers",
-            "View employees by manager",
-            "Delete departments",
-            "Delete roles",
-            "Delete employees",
-            "View the total utilized budget of a department"
-    }
+            [
+                "view departments",
+                "view employees",
+                "view roles",
+                "add department",
+                "add role",
+                "add employee",
+                "Update employee roles",
+                "Update employee managers",
+                "View employees by manager",
+                "Delete departments",
+                "Delete roles",
+                "Delete employees",
+                "View the total utilized budget of a department"
+            ]
 
+    }).then(function (answer) {
+        if (answer.todo === "view departments") {
+            request = "department"
+        } else {
+            if (answer.todo === "view employees") {
+                request = "employee"
 
-});
+            } else {
+                if (answer.todo === "view roles") {
+                    request = "role"
+                } else { connection.end() }
 
-console.table(['ID', 'First_Name', "Last_Name", "Meneger_Id", "Title", "Depatment", "Salary"], connection.query("select * from employee", function (err, res) {
-    if (err) throw err;
-    console.log(res);
-    connection.end();
-}));
+            }
 
-// view all roles
-function afterConnection() {
-    connection.query("select * from role", function (err, res) {
-        if (err) throw err;
-        console.log(res);
-        connection.end();
+        }
+
+        getTable(request)
+
     })
 }
 
 
+
+
+// view all roles
+// function afterConnection() {
+//     connection.query("select * from role", function (err, res) {
+//         if (err) throw err;
+//         console.log(res);
+//         connection.end();
+//     })
+// }
+
+function getTable(request) {
+    var select = "select * from" + " " + request
+    connection.query(select, function (err, res) {
+        console.log(select +
+            " select")
+        if (err) throw err;
+        console.table(res)
+    });
+
+}
 
 
 

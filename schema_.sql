@@ -48,9 +48,16 @@ NOT NULL,
 
 );
 
-            select *
-            from employ;
-            select *
-            from role;
-            select *
-            from department;
+            -- select *
+            -- from employ;
+            -- select *
+            -- from role;
+            -- select *
+            -- from department;
+
+            insert into role
+                (title, salary,department_id)
+            values
+                ("QA tester", 3000, 1),
+                ("analysts", 4000, 2),
+                ("accounter", "5000", 1);

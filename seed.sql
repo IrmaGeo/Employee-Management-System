@@ -1,4 +1,4 @@
-
+use schemaDB
 -- "add department"
 insert into department
     (name, menejer_id)
