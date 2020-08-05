@@ -1,49 +1,67 @@
 // Build a command - line application that at a minimum allows the user to:
 
 var mysql = require("mysql");
+var inquirer = require("inquirer");
+
 
 var connection = mysql.createConnection({
     host: "localhost",
-    port: 8080,
+    port: 3306,
     user: "root",
-    password: "",
-    database: "schema_"
+    password: "Ididit2@20",
+    database: "schemaDB"
 });
 
+var department = "";
 connection.connect(function (err) {
     if (err) throw err
     console.log("there is problem" + connection.threadId)
     connection.end()
+});
+
+
+inquirer.prompt(["what kind of operation would you like to choosen?"], function (answers) {
+    type: "rawlist",
+        message: "what kind of operation would you like to choosen?",
+            name: "todo",
+                choices:
+
+    {
+        "add department",
+            "add role",
+            "add employee",
+            "view departments",
+            "view roles",
+            "view employees",
+            "Update employee roles",
+            "Update employee managers",
+            "View employees by manager",
+            "Delete departments",
+            "Delete roles",
+            "Delete employees",
+            "View the total utilized budget of a department"
+    }
+
 
 });
 
-// questions:
-// what would you like todo:
+console.table(['ID', 'First_Name', "Last_Name", "Meneger_Id", "Title", "Depatment", "Salary"], connection.query("select * from employee", function (err, res) {
+    if (err) throw err;
+    console.log(res);
+    connection.end();
+}));
 
-view
-// (view all
-//  view with department,
-// view with role, 
-// view with last name, 
-// first name, 
-// ID,
-//     role,
-//     salary)
-// View employees by manager
-// View the total utilized budget of a department-- ie the combined salaries of all employees in that department
+// view all roles
+function afterConnection() {
+    connection.query("select * from role", function (err, res) {
+        if (err) throw err;
+        console.log(res);
+        connection.end();
+    })
+}
 
 
-Add
-// Add departments, roles, employees
 
-update
-
-// Update employee roles
-// Update employee managers
-
-DELETE
-
-// Delete departments, roles, and employees
 
 
 
