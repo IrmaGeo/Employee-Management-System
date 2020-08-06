@@ -44,7 +44,8 @@ function QuestionsPrompt() {
                 "add employee",
                 "Delete departments",
                 "Delete roles",
-                "Delete employees"
+                "Delete employees",
+                "Exit"
             ]
 
     }).then(function (answer) {
@@ -95,10 +96,12 @@ function QuestionsPrompt() {
             case "Delete roles":
                 deleteDepartment()
                 break;
-            case "Delete employee":
+            case "Delete employees":
                 deleteDepartment()
                 break;
-
+            case "Exit":
+                connection.end()
+                break;
         }
     })
 }
@@ -314,8 +317,6 @@ function deleteEmployee() {
     // choose employee
     // delete employee
 }
-
-
 
 
 
