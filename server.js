@@ -37,11 +37,11 @@ function QuestionsPrompt() {
                 "View employees by role",
                 "View employees by department",
                 "View the total utilized budget of a department",
+                "Update employee roles",
+                "Update employee managers",
                 "add department",
                 "add role",
                 "add employee",
-                "Update employee roles",
-                "Update employee managers",
                 "Delete departments",
                 "Delete roles",
                 "Delete employees"
@@ -74,6 +74,31 @@ function QuestionsPrompt() {
             case "View the total utilized budget of a department":
                 getTotalbudget()
                 break;
+            case "Update employee roles":
+                updateRole()
+                break;
+            case "Update employee managers":
+                updateManager()
+                break;
+            case "add department":
+                addDepartment()
+                break;
+            case "add role":
+                addRole()
+                break;
+            case "add employee":
+                addEmployee()
+                break;
+            case "Delete departments":
+                deleteDepartment()
+                break;
+            case "Delete roles":
+                deleteDepartment()
+                break;
+            case "Delete employee":
+                deleteDepartment()
+                break;
+
         }
     })
 }
@@ -174,11 +199,78 @@ function getTotalbudget() {
 
 }
 
+function updateRole() {
+    // choose employe or input id
+    // choose role name 
+    // update role_name in employee table
+}
 
 
+function updateManager() {
+    // choose employe with first and last name and get id.
+    // choose manager name 
+    // update maneger_name in employee table
+
+}
 
 
+function addDepartment() {
+    inquirer.prompt([
+        {
+            // prompt questions
+            type: "input",
+            message: "put departments name",
+            name: "department"
 
+        },
+        {
+            type: "input",
+            message: "put meneger's name",
+            name: "maneger"
+        }]
+    ).then(function (answer) {
+
+        var sql = "insert into department (name, manager_name) values ?"
+        var values = [[answer.department, answer.maneger]]
+        console.log()
+        console.log()
+        // insert department
+        connection.query(sql, [values], function (err, res) {
+            if (err) throw err
+            getTable("department")
+            QuestionsPrompt()
+        }
+        )
+    })
+
+
+}
+
+function addRole() {
+    // prompt questions from role table and choose department
+    // insert role
+
+}
+function addEmployee() {
+    // prompt questions, choose role, get department
+    // insert employee
+}
+function deleteDepartment() {
+    // choose department
+    // delete all employee in this department
+    // delete all role in this department
+    // delete department 
+}
+function deleteRole() {
+    // choose role
+    // delete all employee under this role
+    // delete role
+
+}
+function deleteEmployee() {
+    // choose employee
+    // delete employee
+}
 
 
 
