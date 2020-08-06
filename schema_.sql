@@ -1,3 +1,4 @@
+
 DROP DATABASE IF EXISTS schemaDB;
 
 CREATE DATABASE schemaDB;
@@ -12,13 +13,15 @@ CREATE TABLE employee
     (30) not null,
             last_name varchar
     (30) not null,
-    manager_id int
-    (10) null,
+    manager_name varchar
+    (30) null,
+    
+role_name varchar
+    (30) null,
             PRIMARY KEY
     (id)
-        -- FOREIGN KEY (role_id)references role.id,
-        -- FOREIGN KEY (manager_id)references department.menejer_name
-            );
+    );
+
 
     CREATE TABLE role
     (
@@ -33,31 +36,16 @@ NOT NULL,
         (10) not null,
     PRIMARY KEY
         (id)
-	-- FOREIGN KEY (department_id)references DEPARTMENT.id
 );
         CREATE TABLE department
         (
             id integer(10)
             AUTO_INCREMENT not null,
-   name varchar
+    name varchar
             (30),
-   menejer_id int
-            (10),
-   PRIMARY KEY
+    manager_name varchar
+            (30),
+    PRIMARY KEY
             (id)
 
 );
-
-            -- select *
-            -- from employ;
-            -- select *
-            -- from role;
-            -- select *
-            -- from department;
-
-            insert into role
-                (title, salary,department_id)
-            values
-                ("QA tester", 3000, 1),
-                ("analysts", 4000, 2),
-                ("accounter", "5000", 1);

@@ -1,12 +1,13 @@
-use schemaDB
+use schemaDB;
 -- "add department"
 insert into department
-    (name, menejer_id)
+    (name,
+    manager_name)
 values
-    ("analitics", "1"),
-    ("sales", 2),
-    ("accounting", 1),
-    ("developers", 2);
+    ("analitics", "sophio"),
+    ("sales", "sophio"),
+    ("accounting", "nana"),
+    ("developers", "nana");
 
 -- "add role"
 insert into role
@@ -17,45 +18,29 @@ values
     ("accounter", "5000", 1);
 -- "add employee";
 insert into employee
-    (first_name, last_name,manager_id)
+    (first_name, last_name,manager_name, role_name)
 values
-    ("irma", "modzgvrishvili", 1),
-    ("nino", "Tabagari", 2),
-    ("lile", "giorgadze", 1);
+    ("irma", "modzgvrishvili", "sophio", "tester"),
+    ("nino", "Tabagari", "sophio", "QA tester"),
+    ("lile", "giorgadze", "nana", "accounter");
 
 
 
--- "view employees",
+-- --  "Update employee roles",
+-- update employee set role_id=? where id=?
 
-select employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, department.id, department.name
+-- -- "Update employee managers",
+-- update employee set meneger_id=? where id=?
+-- -- "View employees by manager",
+-- select *
+-- from employee
+-- where meneger_id=?
 
-from employee
-    inner join role on employee.role_id=role.id
-    inner join department on role.departmen_id =department.id
+-- -- "Delete departments",
+-- delete department where id=?
+-- -- "Delete roles",
+-- delete role where id=?
 
--- "view roles",
-select *
-from role
+-- -- "Delete employees",
+-- delete employee where id=?
 
---  "Update employee roles",
-update employee set role_id=? where id=?
-
--- "Update employee managers",
-update employee set meneger_id=? where id=?
--- "View employees by manager",
-select *
-from employee
-where meneger_id=?
-
--- "Delete departments",
-delete department where id=?
--- "Delete roles",
-delete role where id=?
-
--- "Delete employees",
-delete employee where id=?
-
--- "View the total utilized budget of a department"
-select sum(salary)
-from department inner join role on id=department_id
-where id=?
