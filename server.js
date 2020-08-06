@@ -248,9 +248,52 @@ function addDepartment() {
 
 function addRole() {
     // prompt questions from role table and choose department
-    // insert role
+    // title, salary, department_id)
+    connection.query("select distinct(name) from department", function (err, res) {
+        if (err) throw err;
+        let array = [];
+        for (i = 0; i < res.length; i++) {
+            array.push(res[i].name)
+        }
+        inquirer.prompt([
+            {
+                // prompt questions
+                type: "input",
+                message: "put role title",
+                name: "title"
 
+            },
+            {
+                type: "input",
+                message: "put salary",
+                name: "salary"
+            },
+            {
+                type: "list",
+                message: "what is Department's name?",
+                name: "name",
+                choices: array
+            }]).then(function (answer) {
+                // insert role
+                connection.query("select id from department where?", { name: answer.name }, function (err, res) {
+                    if (err) throw err
+                    let depID = res[0].id
+                    let sql = "insert into role (title, salary,department_id) values ?"
+                    var values = [[answer.title, answer.salary, depID]]
+                    // insert department
+                    connection.query(sql, [values], function (err, res) {
+                        if (err) throw err
+                        getTable("role")
+                        QuestionsPrompt()
+                    }
+                    )
+                }
+                )
+            })
+
+    })
 }
+
 function addEmployee() {
     // prompt questions, choose role, get department
     // insert employee
