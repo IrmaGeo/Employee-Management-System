@@ -202,20 +202,6 @@ function getTotalbudget() {
 
 }
 
-function updateRole() {
-    // choose employe and keep input id
-    // choose role name and keep choosen id
-    // update role_name in employee table with employee id
-}
-
-
-function updateManager() {
-    // choose employe with first and last name and get id.
-    // choose manager name 
-    // update maneger_name in employee table
-
-}
-
 
 function addDepartment() {
     inquirer.prompt([
@@ -393,8 +379,105 @@ function deleteRole() {
 }
 function deleteEmployee() {
     // choose employee
-    // delete employee
+    connection.query("select * from employee", function (err, res) {
+        if (err) throw err
+        let array = { name: [], id: [] };
+        for (i = 0; i < res.length; i++) {
+            let name = res[i].first_name + " " + res[i].last_name
+            let id = res[i].id
+            array.name.push(name)
+            array.id.push(id)
+        }
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "choose employee:",
+                name: "employee",
+                choices: array.name
+            }
+        ]).then(function (answer) {
+            //  get employee id
+            let id;
+            for (i = 0; i < array.name.length; i++) {
+                if (array.name[i] === answer.employee) {
+                    id = array.id[i]
+                }
+            }
+            // delete employee
+            let sql = "delete from employee where id=?"
+            connection.query(sql, [id], function (err, res) {
+                if (err) throw err
+                console.log("employee is deleted")
+                QuestionsPrompt()
+            })
+        })
+    })
 }
 
 
+function updateRole() {
+    // choose employee
+    connection.query("select * from employee", function (err, res) {
+        if (err) throw err
+        let array = { name: [], id: [] };
+        for (i = 0; i < res.length; i++) {
+            let name = res[i].first_name + " " + res[i].last_name
+            let id = res[i].id
+            array.name.push(name)
+            array.id.push(id)
+        }
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "choose employee:",
+                name: "employee",
+                choices: array.name
+            }
+        ]).then(function (answer) {
+            //  get employee id
+            let id;
+            for (i = 0; i < array.name.length; i++) {
+                if (array.name[i] === answer.employee) {
+                    userId = array.id[i]
+                }
+            }
+
+            // choose role and update employee role
+            connection.query("select distinct(title) from role", function (err, res) {
+                if (err) throw err
+                let array = [];
+                for (i = 0; i < res.length; i++) {
+                    array.push(res[i].title)
+                }
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        message: "choose role:",
+                        name: "role",
+                        choices: array
+                    }
+                ]).then(function (answer) {
+                    // update role
+                    let sql = " delete e, r from employee as e inner join role as r on r.id = e.role_id where r.title = ?";
+                    // connection.query(sql, [answer.role], function (err, res) {
+                    //     if (err) throw err
+                    //     QuestionsPrompt()
+                    // })
+                    console.log(userId, answer.role)
+                })
+            })
+
+
+
+        })
+    })
+}
+
+
+function updateManager() {
+    // choose employe with first and last name and get id.
+    // choose manager name 
+    // update maneger_name in employee table
+
+}
 
