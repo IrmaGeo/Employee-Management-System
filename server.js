@@ -117,7 +117,7 @@ function getTable(request) {
 }
 
 function getEmployeeByManager() {
-    connection.query("select distinct(manager_name) from department", function (err, res) {
+    connection.query("select distinct(first_name, last_name) from employee where ?", { manager_id: "" }, function (err, res) {
         if (err) throw err;
         let array = [];
         for (i = 0; i < res.length; i++) {
@@ -130,7 +130,7 @@ function getEmployeeByManager() {
             choices: array
 
         }).then(function (answer) {
-            var select = "select * from employee where ?"
+            var select = "select employee.id as ID, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department from employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id where  ?"
             connection.query(select, [{ "manager_name": answer.manager }], function (err, res) {
                 if (err) throw err;
                 console.table(res);
@@ -156,8 +156,8 @@ function getEmployeeByRole() {
             name: "role",
             choices: array
         }).then(function (answer) {
-            var select = "select * from employee where ?"
-            connection.query(select, [{ "role_name": answer.role }], function (err, res) {
+            var select = "select employee.id as ID, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department from employee left join role on employee.role_id = role.id left join department on role.department_id = department.id where ?"
+            connection.query(select, [{ "role.title": answer.role }], function (err, res) {
                 if (err) throw err;
                 console.table(res);
                 QuestionsPrompt()
@@ -180,7 +180,7 @@ function getEmployeeByDepartment() {
             name: "department",
             choices: array
         }).then(function (answer) {
-            var select = "select department.name,role.title from employee inner join role on employee.role_name=role.title inner join department on department.id = role.department_id where ?"
+            var select = "select employee.id, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department from employee left join role on employee.role_id=role.id left join department on department.id = role.department_id where ?"
             connection.query(select, [{ "department.name": answer.department }], function (err, res) {
                 if (err) throw err;
                 console.table(res);
@@ -203,9 +203,9 @@ function getTotalbudget() {
 }
 
 function updateRole() {
-    // choose employe or input id
-    // choose role name 
-    // update role_name in employee table
+    // choose employe and keep input id
+    // choose role name and keep choosen id
+    // update role_name in employee table with employee id
 }
 
 
@@ -225,18 +225,12 @@ function addDepartment() {
             message: "put departments name",
             name: "department"
 
-        },
-        {
-            type: "input",
-            message: "put meneger's name",
-            name: "maneger"
-        }]
+        }
+    ]
     ).then(function (answer) {
 
-        var sql = "insert into department (name, manager_name) values ?"
-        var values = [[answer.department, answer.maneger]]
-        console.log()
-        console.log()
+        var sql = "insert into department (name) values ?"
+        var values = [[answer.department]]
         // insert department
         connection.query(sql, [values], function (err, res) {
             if (err) throw err
@@ -287,9 +281,10 @@ function addRole() {
                     connection.query(sql, [values], function (err, res) {
                         if (err) throw err
                         getTable("role")
-                        QuestionsPrompt()
+
                     }
                     )
+                    QuestionsPrompt()
                 }
                 )
             })
@@ -298,15 +293,99 @@ function addRole() {
 }
 
 function addEmployee() {
-    // prompt questions, choose role, get department
-    // insert employee
+    // prompt questions, choose role
+    connection.query("select distinct(title) from role", function (err, res) {
+        if (err) throw err;
+        let array = [];
+        for (i = 0; i < res.length; i++) {
+            array.push(res[i].title)
+        }
+        console.log(array)
+        inquirer.prompt([
+            {
+                // prompt questions
+                type: "input",
+                message: "put employee's first name",
+                name: "first_name"
+
+            },
+            {
+                type: "input",
+                message: "put employee's last name",
+                name: "last_name"
+            },
+            {
+                type: "list",
+                message: "chooose role for employee:",
+                name: "name",
+                choices: array
+            }]).then(function (answer) {
+                // insert employee
+                connection.query("select id from role where?", { title: answer.name }, function (err, res) {
+                    if (err) throw err
+                    let roleID = res[0].id
+                    let sql = "insert into employee (first_name, last_name,role_id, manager_id) values ?"
+                    var values = [[answer.first_name, answer.last_name, roleID, null]]
+                    // insert department
+                    connection.query(sql, [values], function (err, res) {
+                        if (err) throw err
+                        getTable("employee")
+
+                    }
+                    )
+                    QuestionsPrompt()
+                }
+                )
+            })
+
+    })
 }
-function deleteDepartment() {
-    // choose department
-    // delete all employee in this department
-    // delete all role in this department
-    // delete department 
-}
+// function deleteDepartment() {
+//     // choose department
+//     connection.query("select distinct(name) from department", function (req, res) {
+//         if (err) throw err
+//         let array = [];
+//         for (i = 0; i < res.length; i++) {
+//             array.push(res[i].name)
+
+//         }
+//         inquirer.prompt([
+//             {
+//                 type: "list",
+//                 message: "choose department",
+//                 name: "department",
+//                 choices: array
+//             }
+//         ]).then(function (answer) {
+//             // get department id
+//             connection.query("select id from department where?", { name: answer.department }, function (res, req) {
+//                 if (err) throw err
+//                 let id = res[0].id
+//             }
+//                 // delete all employee in this department
+//             connection.query("delete from employee where?", { manager_name: id }, function (res, req) {
+//                 if (err) throw err
+//             })
+
+//             connection.query("delete from role where?", { department_id: id }, function (res, req) {
+//                 if (err) throw err
+//             })
+//                    // delete department 
+//             connection.query("delete from department where?", { id: id }, function (res, req) {
+//                 if (err) throw err
+//                 console.table(department)
+//             })
+//             )
+//         })
+
+
+
+//     })
+//     )
+
+//     // delete all role in this department
+
+// }
 function deleteRole() {
     // choose role
     // delete all employee under this role

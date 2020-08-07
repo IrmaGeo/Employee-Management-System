@@ -1,4 +1,3 @@
-
 DROP DATABASE IF EXISTS schemaDB;
 
 CREATE DATABASE schemaDB;
@@ -13,11 +12,11 @@ CREATE TABLE employee
     (30) not null,
             last_name varchar
     (30) not null,
-    manager_name varchar
-    (30) null,
+    role_id int
+    (10) not null,
     
-role_name varchar
-    (30) null,
+manager_id int
+    (10) null,
             PRIMARY KEY
     (id)
     );
@@ -43,8 +42,7 @@ NOT NULL,
             AUTO_INCREMENT not null,
     name varchar
             (30),
-    manager_name varchar
-            (30),
+   
     PRIMARY KEY
             (id)
 
