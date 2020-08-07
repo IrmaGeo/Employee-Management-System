@@ -94,10 +94,10 @@ function QuestionsPrompt() {
                 deleteDepartment()
                 break;
             case "Delete roles":
-                deleteDepartment()
+                deleteRole()
                 break;
             case "Delete employees":
-                deleteDepartment()
+                deleteEmployee()
                 break;
             case "Exit":
                 connection.end()
@@ -340,57 +340,56 @@ function addEmployee() {
 
     })
 }
-// function deleteDepartment() {
-//     // choose department
-//     connection.query("select distinct(name) from department", function (req, res) {
-//         if (err) throw err
-//         let array = [];
-//         for (i = 0; i < res.length; i++) {
-//             array.push(res[i].name)
+function deleteDepartment() {
+    // choose department
+    connection.query("select distinct(name) from department", function (err, res) {
+        if (err) throw err
+        let array = [];
+        for (i = 0; i < res.length; i++) {
+            array.push(res[i].name)
 
-//         }
-//         inquirer.prompt([
-//             {
-//                 type: "list",
-//                 message: "choose department",
-//                 name: "department",
-//                 choices: array
-//             }
-//         ]).then(function (answer) {
-//             // get department id
-//             connection.query("select id from department where?", { name: answer.department }, function (res, req) {
-//                 if (err) throw err
-//                 let id = res[0].id
-//             }
-//                 // delete all employee in this department
-//             connection.query("delete from employee where?", { manager_name: id }, function (res, req) {
-//                 if (err) throw err
-//             })
-
-//             connection.query("delete from role where?", { department_id: id }, function (res, req) {
-//                 if (err) throw err
-//             })
-//                    // delete department 
-//             connection.query("delete from department where?", { id: id }, function (res, req) {
-//                 if (err) throw err
-//                 console.table(department)
-//             })
-//             )
-//         })
-
-
-
-//     })
-//     )
-
-//     // delete all role in this department
-
-// }
+        }
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "choose department",
+                name: "department",
+                choices: array
+            }
+        ]).then(function (answer) {
+            // delete all employee in this department
+            let sql = " delete e, r, d from employee as e inner join role as r on r.id = e.role_id inner join department as d on r.department_id = d.id where d.name =?";
+            connection.query(sql, [answer.department], function (err, res) {
+                if (err) throw err
+                QuestionsPrompt()
+            })
+        })
+    })
+}
 function deleteRole() {
     // choose role
-    // delete all employee under this role
-    // delete role
-
+    connection.query("select distinct(title) from role", function (err, res) {
+        if (err) throw err
+        let array = [];
+        for (i = 0; i < res.length; i++) {
+            array.push(res[i].title)
+        }
+        inquirer.prompt([
+            {
+                type: "list",
+                message: "choose role:",
+                name: "role",
+                choices: array
+            }
+        ]).then(function (answer) {
+            // delete all employee under this role and delete role
+            let sql = " delete e, r from employee as e inner join role as r on r.id = e.role_id where r.title = ?";
+            connection.query(sql, [answer.role], function (err, res) {
+                if (err) throw err
+                QuestionsPrompt()
+            })
+        })
+    })
 }
 function deleteEmployee() {
     // choose employee
