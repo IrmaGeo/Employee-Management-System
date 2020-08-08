@@ -7,23 +7,25 @@ values
     ("Analysts"),
     ("Accounters");
 
+
 -- add roles
 insert into role
     (title, salary,department_id)
 values
     ("QA tester", 3000, 2),
     ("Busitness Analys", 4000, 3),
-    ("Accounter", "5000", 4);
+    ("Accounter", "5000", 4),
+    ("manager", "10000", 4);
 
 -- "add employee";
 insert into employee
     (first_name, last_name,role_id, manager_id)
 values
     ("irma", "modzgvrishvili", 3, 2),
-    ("nino", "Tabagari", 3, 3),
+    ("nino", "Tabagari", 4, null),
     ("lile", "giorgadze", 1, 1),
     ("sophio", "burjaliani", 2, 2),
-    ("lile", "giorgadze", 1, 2);
+    ("lile", "giorgadze", 1, null);
 
 
 -- view departments
