@@ -2,7 +2,6 @@
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-const { fetchAsyncQuestionPropertyQuestionProperty } = require("inquirer/lib/utils/utils");
 var request = "";
 
 
@@ -32,7 +31,6 @@ function QuestionsPrompt() {
                 "view departments",
                 "view employees",
                 "view roles",
-                "View employees by manager",
                 "View employees by role",
                 "View employees by department",
                 "View the total utilized budget of a department",
@@ -61,9 +59,6 @@ function QuestionsPrompt() {
             case "view roles":
                 request = "role";
                 getTable(request);
-                break;
-            case "View employees by manager":
-                getEmployeeByManager()
                 break;
             case "View employees by role":
                 getEmployeeByRole()
@@ -114,32 +109,6 @@ function getTable(request) {
         QuestionsPrompt()
     });
 }
-
-function getEmployeeByManager() {
-    connection.query("select distinct(first_name, last_name) from employee where ?", { manager_id: "" }, function (err, res) {
-        if (err) throw err;
-        let array = [];
-        for (i = 0; i < res.length; i++) {
-            array.push(res[i].manager_name)
-        }
-        inquirer.prompt({
-            type: "list",
-            message: "Choose manager's name:",
-            name: "manager",
-            choices: array
-
-        }).then(function (answer) {
-            var select = "select employee.id as ID, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department from employee inner join role on employee.role_id = role.id inner join department on role.department_id = department.id where  ?"
-            connection.query(select, [{ "manager_name": answer.manager }], function (err, res) {
-                if (err) throw err;
-                console.table(res);
-                QuestionsPrompt()
-            });
-        })
-
-    })
-}
-
 
 function getEmployeeByRole() {
 
@@ -220,9 +189,10 @@ function addDepartment() {
         connection.query(sql, [values], function (err, res) {
             if (err) throw err
             getTable("department")
-            QuestionsPrompt()
+
         }
         )
+        QuestionsPrompt()
     })
 
 
@@ -266,12 +236,14 @@ function addRole() {
                     connection.query(sql, [values], function (err, res) {
                         if (err) throw err
                         getTable("role")
+                        QuestionsPrompt()
 
                     }
                     )
-                    QuestionsPrompt()
+
                 }
                 )
+
             })
 
     })
@@ -285,7 +257,6 @@ function addEmployee() {
         for (i = 0; i < res.length; i++) {
             array.push(res[i].title)
         }
-        console.log(array)
         inquirer.prompt([
             {
                 // prompt questions
@@ -315,10 +286,11 @@ function addEmployee() {
                     connection.query(sql, [values], function (err, res) {
                         if (err) throw err
                         getTable("employee")
+                        QuestionsPrompt()
 
                     }
                     )
-                    QuestionsPrompt()
+
                 }
                 )
             })
@@ -346,6 +318,7 @@ function deleteDepartment() {
             let sql = " delete e, r, d from employee as e inner join role as r on r.id = e.role_id inner join department as d on r.department_id = d.id where d.name =?";
             connection.query(sql, [answer.department], function (err, res) {
                 if (err) throw err
+                console.table(res)
                 QuestionsPrompt()
             })
         })
@@ -371,6 +344,7 @@ function deleteRole() {
             let sql = " delete e, r from employee as e inner join role as r on r.id = e.role_id where r.title = ?";
             connection.query(sql, [answer.role], function (err, res) {
                 if (err) throw err
+                console.table(res)
                 QuestionsPrompt()
             })
         })
@@ -407,6 +381,7 @@ function deleteEmployee() {
             connection.query(sql, [id], function (err, res) {
                 if (err) throw err
                 console.log("employee is deleted")
+                console.table(res)
                 QuestionsPrompt()
             })
         })
@@ -522,7 +497,6 @@ function updateManager() {
                             managerId = manager.id[i]
                         }
                     }
-                    console.log(employeeId, managerId)
                     // update maneger_name in employee table
                     connection.query("update employee set? where?", [{ manager_id: managerId }, { id: employeeId }], function (err, res) {
                         if (err) throw err
