@@ -441,7 +441,6 @@ function updateRole() {
                     userId = array.id[i]
                 }
             }
-
             // choose role and update employee role
             connection.query("select distinct(title) from role", function (err, res) {
                 if (err) throw err
@@ -457,17 +456,19 @@ function updateRole() {
                         choices: array
                     }
                 ]).then(function (answer) {
-                    // update role
-                    let sql = " delete e, r from employee as e inner join role as r on r.id = e.role_id where r.title = ?";
-                    // connection.query(sql, [answer.role], function (err, res) {
-                    //     if (err) throw err
-                    //     QuestionsPrompt()
-                    // })
-                    console.log(userId, answer.role)
+                    // get role id
+                    connection.query("select id from role where?", { title: answer.role }, function (err, res) {
+                        if (err) throw err
+                        let roleId = res[0].id
+
+                        // update role
+                        connection.query("update employee set? where?", [{ role_id: roleId }, { id: userId }], function (err, res) {
+                            if (err) throw err
+                            QuestionsPrompt()
+                        })
+                    })
                 })
             })
-
-
 
         })
     })
