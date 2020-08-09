@@ -24,8 +24,9 @@ values
     ("irma", "modzgvrishvili", 3, 2),
     ("nino", "Tabagari", 4, null),
     ("lile", "giorgadze", 1, 1),
-    ("sophio", "burjaliani", 2, 2),
-    ("lile", "giorgadze", 1, null);
+    ("sophio", "burjaliani", 2, 2)
+,
+   
 
 
 -- view departments
@@ -54,10 +55,10 @@ values
 -- where role.title=?
 
 --  View employees by department
--- select employee.id as ID, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department
--- from employee inner join role on employee.role_id=role.id
---     inner join department on role.department_id=department.id
--- where department.name=?
+    -- select employee.id as ID, employee.first_name, employee.last_name, role.title as Role, role.salary, department.name as Department
+    -- from employee inner join role on employee.role_id=role.id
+    --     inner join department on role.department_id=department.id
+    -- where department.name=?
 
 --  Delete department
     -- delete e, r, d from employee as e
