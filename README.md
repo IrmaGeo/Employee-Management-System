@@ -29,6 +29,8 @@ So that I can organize and plan my business
 ## installation
 ```npm init; npm install json --save-dev; npm install mysql; npm install inquire```
 
+<img scr="/assets/schema.png" alt="schema image">
+
 ## Questions
 * gitHub link: https://github.com/IrmaGeo/Employee-Management-System
-* video link: 
+* video link: https://drive.google.com/file/d/1Y0OqBn0ZTVLl0oXdEUVNTs_fqsdwZw9d/view?usp=sharing
